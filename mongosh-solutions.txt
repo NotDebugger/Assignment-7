@@ -1,0 +1,536 @@
+1.
+
+assignment7> db.createCollection("books", {validator: { title: { $type: "string", $ne: ""}}})
+{ ok: 1 }
+
+===============
+2.
+
+assignment7> db.authors.insertOne({name: "author1", nationality: "British"})
+{
+  acknowledged: true,
+  insertedId: ObjectId('6ab98f8f07b3bb3475ad1210')
+}
+
+===============
+3.
+
+assignment7> db.createCollection("logs", {capped: true,size: 1024 * 1024,})
+{ ok: 1 }
+
+===============
+4.
+
+assignment7> db.books.createIndex({ title: 1 })
+title_1
+
+===============
+5.
+
+assignment7> db.books.insertOne({
+|     "title": "book2",
+|     "author": "khaled",
+|     "year": 1937,
+|      "genres": ["fantasy", "adventure"]
+| })
+{
+  acknowledged: true,
+  insertedId: ObjectId('6ab99f4707b3bb3475ad1211')
+}
+
+===============
+6.
+
+assignment7> db.books.insertMany([
+|         {
+|             "title": "book6",
+|             "author": "author2",
+|             "year": 1937,
+|             "genres": [
+|                 "romance",
+|                 "adventure"
+|             ]
+|         },
+|         {
+|             "title": "book7",
+|             "author": "author3",
+|             "year": 2020,
+|             "genres": [
+|                 "classic"
+|             ]
+|         },
+|         {
+|             "title": "book8",
+|             "author": "author4",
+|             "year": 2022,
+|             "genres": [
+|                 "fantasy",
+|                 "adventure"
+|             ]
+|         }
+|     ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6ab9a12707b3bb3475ad1212'),
+    '1': ObjectId('6ab9a12707b3bb3475ad1213'),
+    '2': ObjectId('6ab9a12707b3bb3475ad1214')
+  }
+}
+
+===============
+7.
+
+assignment7> db.logs.insertOne({bookId: ObjectId("6ab9a12707b3bb3475ad1213"), action: "borrowed"})
+{
+  acknowledged: true,
+  insertedId: ObjectId('6ab9a4a107b3bb3475ad1215')
+}
+
+===============
+8.
+
+assignment7> db.books.updateOne({title:"Future"}, {$set: {year: 2022}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+===============
+9.
+
+assignment7> db.books.findOne({ title: "Brave New World" })
+{
+  _id: ObjectId('6abc161c53723214ba3acb89'),
+  title: 'Brave New World',
+  author: 'amr',
+  year: 2020,
+  genres: [ 'fantasy', 'adventure' ]
+}
+
+===============
+10.
+
+assignment7> db.books.find({
+|     year: {
+|       $gte: 1990,
+|       $lte: 2010,
+|     },
+|   });
+[
+  {
+    _id: ObjectId('6ab99e8d48aa55fc44433a9e'),
+    title: 'book1',
+    author: 'ali',
+    year: 2001,
+    genres: [ 'fantasy', 'adventure' ]
+  }
+]
+
+===============
+11.
+
+assignment7> db.books.find({ genres: "Science Fiction" })
+[
+  {
+    _id: ObjectId('6abc2409f238810e84059452'),
+    title: 'book10',
+    author: 'hassan',
+    year: 2020,
+    genres: [ 'fantasy', 'Science Fiction' ]
+  }
+]
+
+===============
+12.
+
+assignment7> db.books.find({}).sort({year: -1}).skip(2).limit(3)
+[
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1214'),
+    title: 'book8',
+    author: 'author4',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d19'),
+    title: 'book4',
+    author: 'author3',
+    year: 2020,
+    genres: [ 'classic' ]
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1213'),
+    title: 'book7',
+    author: 'author3',
+    year: 2020,
+    genres: [ 'classic' ]
+  }
+]
+
+===============
+13.
+
+
+assignment7> db.books.find({year: {$type: "int"}})
+[
+  {
+    _id: ObjectId('6ab99e8d48aa55fc44433a9e'),
+    title: 'book1',
+    author: 'ali',
+    year: 2001,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab99f4707b3bb3475ad1211'),
+    title: 'book2',
+    author: 'khaled',
+    year: 1937,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d18'),
+    title: 'book3',
+    author: 'author2',
+    year: 1937,
+    genres: [ 'romance', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d19'),
+    title: 'book4',
+    author: 'author3',
+    year: 2020,
+    genres: [ 'classic' ]
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d1a'),
+    title: 'book5',
+    author: 'author4',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1212'),
+    title: 'book6',
+    author: 'author2',
+    year: 1937,
+    genres: [ 'romance', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1213'),
+    title: 'book7',
+    author: 'author3',
+    year: 2020,
+    genres: [ 'classic' ]
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1214'),
+    title: 'book8',
+    author: 'author4',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a4fb3c33e75e6d71bd29'),
+    title: 'Future',
+    author: 'mohamed',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6abc161c53723214ba3acb89'),
+    title: 'Brave New World',
+    author: 'amr',
+    year: 2020,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6abc2409f238810e84059452'),
+    title: 'book10',
+    author: 'hassan',
+    year: 2020,
+    genres: [ 'fantasy', 'Science Fiction' ]
+  }
+]
+
+===============
+14.
+
+assignment7> db.books.find({genres: {$nin: ["Horror", "Science Fiction"]}})
+[
+  {
+    _id: ObjectId('6ab99e8d48aa55fc44433a9e'),
+    title: 'book1',
+    author: 'ali',
+    year: 2001,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab99f4707b3bb3475ad1211'),
+    title: 'book2',
+    author: 'khaled',
+    year: 1937,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d18'),
+    title: 'book3',
+    author: 'author2',
+    year: 1937,
+    genres: [ 'romance', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d19'),
+    title: 'book4',
+    author: 'author3',
+    year: 2020,
+    genres: [ 'classic' ]
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d1a'),
+    title: 'book5',
+    author: 'author4',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1212'),
+    title: 'book6',
+    author: 'author2',
+    year: 1937,
+    genres: [ 'romance', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1213'),
+    title: 'book7',
+    author: 'author3',
+    year: 2020,
+    genres: [ 'classic' ]
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1214'),
+    title: 'book8',
+    author: 'author4',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a4fb3c33e75e6d71bd29'),
+    title: 'Future',
+    author: 'mohamed',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6abc161c53723214ba3acb89'),
+    title: 'Brave New World',
+    author: 'amr',
+    year: 2020,
+    genres: [ 'fantasy', 'adventure' ]
+  }
+]
+
+===============
+15.
+
+assignment7> db.books.deleteMany({year: {$lt: 2000}})
+{ acknowledged: true, deletedCount: 3 }
+
+===============
+16.
+
+assignment7> db.books.aggregate([{$match: {year: {$gt: 2000}}}, {$sort: {year: -1}}])
+[
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d1a'),
+    title: 'book5',
+    author: 'author4',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1214'),
+    title: 'book8',
+    author: 'author4',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a4fb3c33e75e6d71bd29'),
+    title: 'Future',
+    author: 'mohamed',
+    year: 2022,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d19'),
+    title: 'book4',
+    author: 'author3',
+    year: 2020,
+    genres: [ 'classic' ]
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1213'),
+    title: 'book7',
+    author: 'author3',
+    year: 2020,
+    genres: [ 'classic' ]
+  },
+  {
+    _id: ObjectId('6abc161c53723214ba3acb89'),
+    title: 'Brave New World',
+    author: 'amr',
+    year: 2020,
+    genres: [ 'fantasy', 'adventure' ]
+  },
+  {
+    _id: ObjectId('6abc2409f238810e84059452'),
+    title: 'book10',
+    author: 'hassan',
+    year: 2020,
+    genres: [ 'fantasy', 'Science Fiction' ]
+  },
+  {
+    _id: ObjectId('6ab99e8d48aa55fc44433a9e'),
+    title: 'book1',
+    author: 'ali',
+    year: 2001,
+    genres: [ 'fantasy', 'adventure' ]
+  }
+]
+
+
+===============
+17.
+
+assignment7> db.books.aggregate([{$match: {year: {$gt: 2000}}}, {$project: {_id: 0, title: 1, author: 1, year: 1}}])
+[
+  { title: 'book1', author: 'ali', year: 2001 },
+  { title: 'book4', author: 'author3', year: 2020 },
+  { title: 'book5', author: 'author4', year: 2022 },
+  { title: 'book7', author: 'author3', year: 2020 },
+  { title: 'book8', author: 'author4', year: 2022 },
+  { title: 'Future', author: 'mohamed', year: 2022 },
+  { title: 'Brave New World', author: 'amr', year: 2020 },
+  { title: 'book10', author: 'hassan', year: 2020 }
+]
+
+===============
+18.
+
+assignment7> db.books.aggregate([{$unwind: "$genres"}])
+[
+  {
+    _id: ObjectId('6ab99e8d48aa55fc44433a9e'),
+    title: 'book1',
+    author: 'ali',
+    year: 2001,
+    genres: 'fantasy'
+  },
+  {
+    _id: ObjectId('6ab99e8d48aa55fc44433a9e'),
+    title: 'book1',
+    author: 'ali',
+    year: 2001,
+    genres: 'adventure'
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d19'),
+    title: 'book4',
+    author: 'author3',
+    year: 2020,
+    genres: 'classic'
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d1a'),
+    title: 'book5',
+    author: 'author4',
+    year: 2022,
+    genres: 'fantasy'
+  },
+  {
+    _id: ObjectId('6ab9a060725bef95e5700d1a'),
+    title: 'book5',
+    author: 'author4',
+    year: 2022,
+    genres: 'adventure'
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1213'),
+    title: 'book7',
+    author: 'author3',
+    year: 2020,
+    genres: 'classic'
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1214'),
+    title: 'book8',
+    author: 'author4',
+    year: 2022,
+    genres: 'fantasy'
+  },
+  {
+    _id: ObjectId('6ab9a12707b3bb3475ad1214'),
+    title: 'book8',
+    author: 'author4',
+    year: 2022,
+    genres: 'adventure'
+  },
+  {
+    _id: ObjectId('6ab9a4fb3c33e75e6d71bd29'),
+    title: 'Future',
+    author: 'mohamed',
+    year: 2022,
+    genres: 'fantasy'
+  },
+  {
+    _id: ObjectId('6ab9a4fb3c33e75e6d71bd29'),
+    title: 'Future',
+    author: 'mohamed',
+    year: 2022,
+    genres: 'adventure'
+  },
+  {
+    _id: ObjectId('6abc161c53723214ba3acb89'),
+    title: 'Brave New World',
+    author: 'amr',
+    year: 2020,
+    genres: 'fantasy'
+  },
+  {
+    _id: ObjectId('6abc161c53723214ba3acb89'),
+    title: 'Brave New World',
+    author: 'amr',
+    year: 2020,
+    genres: 'adventure'
+  },
+  {
+    _id: ObjectId('6abc2409f238810e84059452'),
+    title: 'book10',
+    author: 'hassan',
+    year: 2020,
+    genres: 'fantasy'
+  },
+  {
+    _id: ObjectId('6abc2409f238810e84059452'),
+    title: 'book10',
+    author: 'hassan',
+    year: 2020,
+    genres: 'Science Fiction'
+  }
+]
+
+===============
+19.
+
+assignment7> db.logs.aggregate([{$lookup: {from: "books", localField: "bookId", foreignField: "_id", as: "book_details"}}, {$project: {_id: 0, action: 1, "book_details.title": 1, "book_details.author": 1, "book_details.year": 1}}])
+[
+  {
+    action: 'borrowed',
+    book_details: [ { title: 'book7', author: 'author3', year: 2020 } ]
+  }
+]
